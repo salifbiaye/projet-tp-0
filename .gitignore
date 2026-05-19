@@ -33,7 +33,7 @@ unpacked/
 *.out
 __pycache__/
 .pytest_cache/
-
+build_rapport_ifall.py
 # OS / éditeurs
 Thumbs.db
 Desktop.ini

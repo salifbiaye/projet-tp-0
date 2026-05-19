@@ -116,13 +116,13 @@ public class ChatClient extends JFrame {
         try {
             String response = get("/chat/messages?lastIndex=" + lastMessageIndex);
             String[] messages = JsonUtil.readStringArrayField(response, "messages");
+            int nextIndex = JsonUtil.readIntField(response, "nextIndex", lastMessageIndex + messages.length);
+            lastMessageIndex = nextIndex;
             for (String message : messages) {
                 if (!message.startsWith(pseudo + ":")) {
                     txtOutput.append(message + "\n");
                 }
             }
-            lastMessageIndex = JsonUtil.readIntField(response, "nextIndex", lastMessageIndex + messages.length);
-
             if (messages.length > 0) {
                 txtOutput.setCaretPosition(txtOutput.getDocument().getLength());
             }

@@ -57,7 +57,11 @@ public final class JsonUtil {
             }
 
             ParseResult key = readString(json, i);
-            i = skipUntil(json, key.nextIndex, ':') + 1;
+            int colonPos = skipUntil(json, key.nextIndex, ':');
+            if (colonPos >= json.length()) {
+                break;
+            }
+            i = colonPos + 1;
             while (i < json.length() && Character.isWhitespace(json.charAt(i))) {
                 i++;
             }

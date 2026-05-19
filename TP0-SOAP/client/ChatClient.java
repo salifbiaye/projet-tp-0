@@ -119,14 +119,13 @@ public class ChatClient extends JFrame {
             String request = SoapUtil.operationRequest("getMessages", "lastIndex", String.valueOf(lastMessageIndex));
             Document document = SoapUtil.parse(sendSoap("getMessages", request));
             String[] messages = SoapUtil.messageArray(document);
+            Element nextIndex = SoapUtil.firstElementByLocalName(document.getDocumentElement(), "nextIndex");
+            lastMessageIndex = nextIndex == null ? lastMessageIndex + messages.length : Integer.parseInt(nextIndex.getTextContent());
             for (String message : messages) {
                 if (!message.startsWith(pseudo + ":")) {
                     txtOutput.append(message + "\n");
                 }
             }
-
-            Element nextIndex = SoapUtil.firstElementByLocalName(document.getDocumentElement(), "nextIndex");
-            lastMessageIndex = nextIndex == null ? lastMessageIndex + messages.length : Integer.parseInt(nextIndex.getTextContent());
 
             if (messages.length > 0) {
                 txtOutput.setCaretPosition(txtOutput.getDocument().getLength());
