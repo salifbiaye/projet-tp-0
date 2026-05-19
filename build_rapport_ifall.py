@@ -389,7 +389,7 @@ def add_callout(doc, title, body, kind="info"):
     cell = table.cell(0, 0)
     shade(cell, fill)
     borders(cell, color=accent, size="8")
-    cell_margins(cell, top=110, start=150, bottom=110, end=150)
+    cell_margins(cell, top=150, start=230, bottom=145, end=230)
     p = cell.paragraphs[0]
     pspace(p, after=2)
     r = p.add_run(title)
@@ -460,7 +460,7 @@ def chapter(doc, title, subtitle=None, anchor=None, page_break=True):
     cell = table.cell(0, 0)
     shade(cell, LIGHT_BLUE)
     borders(cell, color=BLUE, size="8")
-    cell_margins(cell, top=130, start=170, bottom=125, end=170)
+    cell_margins(cell, top=210, start=260, bottom=200, end=260)
     p = cell.paragraphs[0]
     p.style = "Heading 1"
     pspace(p, after=0)
@@ -470,7 +470,7 @@ def chapter(doc, title, subtitle=None, anchor=None, page_break=True):
     set_font(r, size=15.0, bold=True, color=NAVY)
     if subtitle:
         p = cell.add_paragraph()
-        pspace(p, after=0)
+        pspace(p, before=2, after=0)
         r = p.add_run(subtitle)
         set_font(r, size=9.3, italic=True, color=MUTED)
     apply_table_geometry(table, [CONTENT_WIDTH_DXA], table_width_dxa=CONTENT_WIDTH_DXA, indent_dxa=0)
@@ -598,28 +598,28 @@ def build_figures():
     figures["2.1"] = save_fig("2.1", rmi)
 
     def xmlrpc(draw):
-        draw_box(draw, (85, 185, 390, 340), "Client", "XmlRpcClient\nméthodes distantes", fill=(248, 250, 252))
-        draw_box(draw, (570, 170, 910, 350), "HTTP + XML", "<methodCall>\nChatRoom.postMessage", fill=(239, 246, 255), hatch=True)
-        draw_box(draw, (1090, 185, 1400, 340), "Serveur", "WebServer 8080\nHandler ChatRoom", fill=(236, 253, 245))
-        draw_box(draw, (620, 520, 980, 665), "Liste messages", "lastIndex\nnouveaux messages", fill=(255, 247, 237))
-        arrow(draw, (390, 245), (570, 245), label="appel")
-        arrow(draw, (910, 245), (1090, 245), label="exécute")
-        arrow(draw, (1240, 340), (980, 520), dashed=True, label="stocke")
-        arrow(draw, (980, 590), (390, 315), dashed=True, label="polling")
-        draw.text((90, 705), "Le client ne reçoit pas de callback : il interroge régulièrement le serveur avec getMessages(lastIndex).", font=pil_font(20, hand=True), fill=(20, 20, 20))
+        draw_box(draw, (90, 175, 360, 345), "Client Swing", "XmlRpcClient\nsubscribe()\npostMessage()", fill=(248, 250, 252))
+        draw_box(draw, (470, 165, 760, 355), "Requête XML-RPC", "HTTP POST\n<methodCall>\nparamètres XML", fill=(239, 246, 255), hatch=True)
+        draw_box(draw, (880, 175, 1165, 345), "Serveur XML-RPC", "WebServer : 8080\nHandler : ChatRoom", fill=(236, 253, 245))
+        draw_box(draw, (520, 505, 1010, 635), "Historique des messages", "messages[]\nlastIndex -> nouveaux messages", fill=(255, 247, 237))
+        arrow(draw, (360, 235), (470, 235), label="appel")
+        arrow(draw, (760, 235), (880, 235), label="exécution")
+        arrow(draw, (1030, 345), (900, 505), dashed=True, label="écrit")
+        arrow(draw, (520, 560), (360, 325), dashed=True, label="getMessages")
+        draw.text((95, 690), "Réception par polling : le client revient demander les messages qui suivent son dernier index connu.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
     figures["3.1"] = save_fig("3.1", xmlrpc)
 
     def soap(draw):
-        draw_box(draw, (80, 180, 370, 335), "Client SOAP", "Requête POST\nopération XML", fill=(248, 250, 252))
-        draw_box(draw, (535, 160, 900, 355), "Enveloppe SOAP", "Envelope\nHeader optionnel\nBody obligatoire", fill=(239, 246, 255), hatch=True)
-        draw_box(draw, (1060, 180, 1400, 335), "Service /chat", "SoapUtil.parse()\nChatRoomImpl", fill=(236, 253, 245))
-        draw_box(draw, (590, 510, 950, 660), "WSDL", "GET /chat?wsdl\ncontrat du service", fill=(255, 247, 237))
-        arrow(draw, (370, 245), (535, 245), label="HTTP")
-        arrow(draw, (900, 245), (1060, 245), label="parse")
-        arrow(draw, (1220, 335), (950, 510), dashed=True, label="décrit")
-        arrow(draw, (1060, 300), (370, 300), dashed=True, label="SOAP response")
-        draw.text((90, 705), "SOAP formalise l’échange : le corps XML identifie l’opération et la réponse reprend une structure enveloppée.", font=pil_font(20, hand=True), fill=(20, 20, 20))
+        draw_box(draw, (85, 175, 350, 345), "Client SOAP", "HTTP POST\nopération XML", fill=(248, 250, 252))
+        draw_box(draw, (455, 150, 790, 370), "Message SOAP", "Envelope\nHeader optionnel\nBody : opération", fill=(239, 246, 255), hatch=True)
+        draw_box(draw, (915, 175, 1190, 345), "Service /chat", "SoapUtil.parse()\nChatRoomImpl", fill=(236, 253, 245))
+        draw_box(draw, (520, 505, 990, 635), "Contrat WSDL", "GET /chat?wsdl\nopérations : subscribe, postMessage, getMessages", fill=(255, 247, 237))
+        arrow(draw, (350, 235), (455, 235), label="requête")
+        arrow(draw, (790, 235), (915, 235), label="parse")
+        arrow(draw, (915, 302), (790, 302), dashed=True, label="réponse")
+        arrow(draw, (1120, 345), (990, 505), dashed=True, label="décrit")
+        draw.text((95, 690), "SOAP sépare le contrat du service et le message échangé : le WSDL décrit, l’enveloppe transporte.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
     figures["4.1"] = save_fig("4.1", soap)
 
