@@ -19,6 +19,7 @@ OUT = ROOT / "rapport-i-fall-complet.docx"
 FIG_DIR = ROOT / "figures_croquis_ifall"
 LOGO_UCAD = Path(r"C:\Users\DELL\Downloads\logo_ucad.png")
 REPO_URL = "https://github.com/salifbiaye/projet-tp-0"
+IMAGE_DIR = ROOT / "images"
 
 SKILL_SCRIPTS = Path(
     r"C:\Users\DELL\.codex\plugins\cache\openai-primary-runtime\documents\26.430.10722\skills\documents\scripts"
@@ -447,6 +448,39 @@ def add_capture_placeholder(doc, title, instruction):
     pspace(p, before=10, after=6)
     r = p.add_run("[ Zone réservée à la capture d’écran ]")
     set_font(r, size=10.2, bold=True, color=MUTED)
+    apply_table_geometry(table, [CONTENT_WIDTH_DXA], table_width_dxa=CONTENT_WIDTH_DXA, indent_dxa=0)
+    doc.add_paragraph()
+
+
+def add_capture_image(doc, title, image_name, analysis):
+    path = IMAGE_DIR / image_name
+    if not path.exists():
+        add_capture_placeholder(doc, title, f"Image attendue : {image_name}. {analysis}")
+        return
+    table = doc.add_table(rows=1, cols=1)
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table.autofit = False
+    cell = table.cell(0, 0)
+    shade(cell, "FFFFFF")
+    borders(cell, color=TEAL, size="6")
+    cell_margins(cell, top=135, start=160, bottom=120, end=160)
+    p = cell.paragraphs[0]
+    pspace(p, after=4)
+    r = p.add_run(title)
+    set_font(r, size=10.0, bold=True, color=TEAL)
+    p = cell.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pspace(p, after=3)
+    run = p.add_run()
+    with Image.open(path) as img:
+        width, height = img.size
+    # Desktop captures are wide; keep them inside the text column without wasting too much height.
+    picture_width = Cm(14.7 if width >= height else 10.5)
+    run.add_picture(str(path), width=picture_width)
+    p = cell.add_paragraph()
+    pspace(p, before=2, after=0, line=1.0)
+    r = p.add_run(analysis)
+    set_font(r, size=8.8, color=MUTED)
     apply_table_geometry(table, [CONTENT_WIDTH_DXA], table_width_dxa=CONTENT_WIDTH_DXA, indent_dxa=0)
     doc.add_paragraph()
 
@@ -1312,27 +1346,31 @@ ant -version
     section_heading(doc, "7.4 Captures d’exécution à insérer")
     add_paragraph(
         doc,
-        "Les captures ne doivent pas être placées en rafale. Elles servent à prouver l’exécution et doivent apparaître après une explication du scénario. Les cadres ci-dessous indiquent les captures recommandées lorsque l’application est lancée localement.",
+        "Les captures ci-dessous documentent une exécution réelle de la version REST de ChatUser. Elles complètent les schémas en montrant le serveur, les clients, l’échange de messages et la sortie d’un utilisateur.",
     )
-    add_capture_placeholder(
+    add_capture_image(
         doc,
-        "Capture 1 : serveur ChatUser démarré",
-        "Insérer une capture du terminal serveur après `ant run-server`, avec le port visible et le message indiquant que le serveur attend les connexions.",
+        "Capture 7.1 : serveur REST démarré",
+        "server-start.png",
+        "Cette capture montre le lancement du serveur avec `ant run-server`. Le terminal affiche le port `8082`, les endpoints REST disponibles et les premières notifications d’arrivée dans la salle.",
     )
-    add_capture_placeholder(
+    add_capture_image(
         doc,
-        "Capture 2 : deux clients connectés",
-        "Insérer une capture montrant deux fenêtres client avec des pseudos différents, par exemple Alice et Bob.",
+        "Capture 7.2 : deux clients connectés",
+        "two-client-connected.png",
+        "Cette capture confirme que deux utilisateurs distincts rejoignent la salle de discussion. Le serveur reçoit les événements et les affiche dans le terminal.",
     )
-    add_capture_placeholder(
+    add_capture_image(
         doc,
-        "Capture 3 : message envoyé et reçu",
-        "Insérer une capture où un message envoyé par un client apparaît chez l’autre, pour valider la diffusion ou la récupération par polling.",
+        "Capture 7.3 : message envoyé et reçu",
+        "send-message.png",
+        "Cette capture montre deux fenêtres clientes. Un message envoyé par un utilisateur apparaît dans l’autre fenêtre, ce qui valide la circulation des messages entre clients via le serveur REST.",
     )
-    add_capture_placeholder(
+    add_capture_image(
         doc,
-        "Capture 4 : sortie d’un utilisateur",
-        "Insérer une capture montrant la notification de départ ou l’absence d’erreur serveur après fermeture d’un client.",
+        "Capture 7.4 : sortie de l’utilisateur Babacar",
+        "sortie-babacar.png",
+        "Cette capture illustre la notification de sortie d’un utilisateur. Elle permet de vérifier que la désinscription est prise en compte sans bloquer l’application.",
     )
     section_heading(doc, "7.5 Points de contrôle")
     add_paragraph(

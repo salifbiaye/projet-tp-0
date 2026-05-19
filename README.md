@@ -22,6 +22,7 @@ Le dépôt présente une même application de discussion, **ChatUser**, impléme
 | `TP0-TCP/` | Variante bonus avec sockets TCP, `ServerSocket` et threads clients. |
 | `ProjetAnt/` | Exemple d’automatisation Java avec Apache Ant. |
 | `fop/` et `projet/` | Exemples XML, XSL-FO et génération PDF avec Apache FOP. |
+| `images/` | Captures d’exécution insérées dans le rapport Word. |
 | `rapport/` | Ancienne base de rapport utilisée comme source documentaire. |
 
 ## Technologies étudiées
@@ -118,6 +119,8 @@ Le rapport Word `rapport-i-fall-complet.docx` documente :
 - le guide d’exécution et de validation ;
 - les annexes Ant et FOP ;
 - les schémas techniques et emplacements pour captures d’exécution.
+
+Les captures utilisées dans le rapport sont conservées dans `images/` afin que le document reste vérifiable et que les preuves d’exécution soient disponibles dans le dépôt.
 
 ## Nettoyage
 
