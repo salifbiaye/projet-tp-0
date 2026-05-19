@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TP0-TCP-Chat" default="all" basedir=".">
+    <property name="src.interfaces" value="interfaces"/>
+    <property name="src.impl" value="impl"/>
+    <property name="src.server" value="server"/>
+    <property name="src.client" value="client"/>
+    <property name="bin.dir" value="bin"/>
+    <property name="doc.dir" value="doc"/>
+    <property name="archive.dir" value="archive"/>
+    <property name="archive.server" value="ChatTcpServer.jar"/>
+    <property name="archive.client" value="ChatTcpClient.jar"/>
+
+    <target name="init">
+        <mkdir dir="${bin.dir}"/>
+        <mkdir dir="${doc.dir}"/>
+        <mkdir dir="${archive.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac destdir="${bin.dir}" includeantruntime="false" encoding="UTF-8">
+            <src path="${src.interfaces}"/>
+            <src path="${src.impl}"/>
+            <src path="${src.server}"/>
+            <src path="${src.client}"/>
+        </javac>
+    </target>
+
+    <target name="doc" depends="init">
+        <javadoc destdir="${doc.dir}" encoding="UTF-8" charset="UTF-8" docencoding="UTF-8" author="true" version="true" use="true">
+            <fileset dir="${src.interfaces}" includes="**/*.java"/>
+            <fileset dir="${src.impl}" includes="**/*.java"/>
+            <fileset dir="${src.server}" includes="**/*.java"/>
+            <fileset dir="${src.client}" includes="**/*.java"/>
+        </javadoc>
+    </target>
+
+    <target name="arch" depends="compile,doc">
+        <jar destfile="${archive.dir}/${archive.server}" basedir="${bin.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="server.ChatServer"/>
+            </manifest>
+        </jar>
+        <jar destfile="${archive.dir}/${archive.client}" basedir="${bin.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="client.ChatClient"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+        <delete dir="${doc.dir}"/>
+        <delete dir="${archive.dir}"/>
+    </target>
+
+    <target name="run-server" depends="compile">
+        <java classname="server.ChatServer" fork="true">
+            <classpath>
+                <pathelement path="${bin.dir}"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="run-client" depends="compile">
+        <java classname="client.ChatClient" fork="true">
+            <classpath>
+                <pathelement path="${bin.dir}"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="all" depends="clean,init,compile,doc,arch"/>
+</project>

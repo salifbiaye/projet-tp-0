@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ProjetAnt" default="all" basedir=".">
+    
+    <!-- Propriétés du projet -->
+    <property name="src.dir" value="src"/>
+    <property name="bin.dir" value="bin"/>
+    <property name="doc.dir" value="doc"/>
+    <property name="archive.dir" value="archive"/>
+    <property name="archive.name" value="ProjetAnt.jar"/>
+    
+    <!-- Cible init : mise en place de l'environnement -->
+    <target name="init" description="Initialisation de l'environnement">
+        <echo message="Création des répertoires nécessaires..."/>
+        <mkdir dir="${bin.dir}"/>
+        <mkdir dir="${doc.dir}"/>
+        <mkdir dir="${archive.dir}"/>
+        <echo message="Environnement initialisé avec succès."/>
+    </target>
+    
+    <!-- Cible compile : compilation des sources -->
+    <target name="compile" depends="init" description="Compilation des sources Java">
+        <echo message="Compilation des fichiers Java..."/>
+        <javac srcdir="${src.dir}" 
+               destdir="${bin.dir}"
+               includeantruntime="false"
+               encoding="UTF-8"/>
+        <echo message="Compilation terminée."/>
+    </target>
+    
+    <!-- Cible doc : génération de la documentation API -->
+    <target name="doc" depends="init" description="Génération de la documentation Javadoc">
+        <echo message="Génération de la documentation API..."/>
+        <javadoc destdir="${doc.dir}"
+                 encoding="UTF-8"
+                 charset="UTF-8"
+                 docencoding="UTF-8"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="Documentation API ${ant.project.name}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+            <doctitle><![CDATA[<h1>Documentation API ${ant.project.name}</h1>]]></doctitle>
+        </javadoc>
+        <echo message="Documentation générée dans ${doc.dir}"/>
+    </target>
+    
+    <!-- Cible arch : archivage du projet -->
+    <target name="arch" depends="compile,doc" description="Archivage du projet">
+        <echo message="Création de l'archive..."/>
+        <jar destfile="${archive.dir}/${archive.name}" basedir="${bin.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="Bonjour"/>
+            </manifest>
+        </jar>
+        <echo message="Archive créée : ${archive.dir}/${archive.name}"/>
+    </target>
+    
+    <!-- Cible clean : nettoyage -->
+    <target name="clean" description="Nettoyage des fichiers générés">
+        <echo message="Nettoyage du projet..."/>
+        <delete dir="${bin.dir}"/>
+        <echo message="Dossier ${bin.dir} supprimé."/>
+    </target>
+    
+    <!-- Cible run : exécuter le programme -->
+    <target name="run" depends="compile" description="Exécuter le programme">
+        <echo message="Exécution du programme..."/>
+        <java classname="Bonjour" fork="true">
+            <classpath>
+                <pathelement path="${bin.dir}"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <!-- Cible all : exécution de toutes les cibles -->
+    <target name="all" depends="clean,init,compile,doc,arch" description="Exécution complète du build">
+        <echo message="Build complet terminé avec succès !"/>
+    </target>
+    
+</project>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="my-page">
+      <fo:region-body margin="1in"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+  
+  <fo:page-sequence master-reference="my-page">
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block>Menu du restaurant</fo:block>
+      <fo:block>
+        <fo:table>
+          <fo:table-column column-width="3cm"/>
+          <fo:table-column column-width="3cm"/>
+          <fo:table-column column-width="3cm"/>
+          <fo:table-column column-width="3cm"/>
+          
+          <fo:table-body>
+            <fo:table-row>
+              <fo:table-cell><fo:block font-size="18pt" font-weight="bold">Jour</fo:block></fo:table-cell>
+              <fo:table-cell><fo:block font-size="18pt" font-weight="bold">Entree</fo:block></fo:table-cell>
+              <fo:table-cell><fo:block font-size="18pt" font-weight="bold">Plat</fo:block></fo:table-cell>
+              <fo:table-cell><fo:block font-size="18pt" font-weight="bold">Dessert</fo:block></fo:table-cell>
+            </fo:table-row>
+          </fo:table-body>
+        </fo:table>
+      </fo:block>
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

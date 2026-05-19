@@ -1,0 +1,42 @@
+# Environnements et assistants locaux
+.claude/
+.codex/
+
+# Java / Ant
+*.class
+**/bin/
+**/doc/
+**/archive/
+
+# Fichiers temporaires Word / LibreOffice
+~$*
+.~lock.*
+*.tmp
+*.bak
+
+# Rapports et rendus intermédiaires
+*.pdf
+qa_*/
+qa_*.html
+qa_ifall_preview.html
+qa_ifall_media/
+qa_render_ifall/
+figures_croquis_ifall/
+unpacked/
+
+# Journaux et caches
+*.log
+*.aux
+*.toc
+*.lof
+*.lol
+*.out
+__pycache__/
+.pytest_cache/
+
+# OS / éditeurs
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/

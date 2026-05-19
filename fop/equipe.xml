@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="statistiques.xsl" ?>
+<statistiques_equipe>
+  <equipe nom="Chicago Bulls">
+    <victoires>78</victoires>
+    <defaites>2</defaites>
+    <classement>1</classement>
+  </equipe>
+  <equipe nom="Los Angeles Lakers">
+    <victoires>72</victoires>
+    <defaites>8</defaites>
+    <classement>2</classement>
+  </equipe>
+  <equipe nom="Golden State Warriors">
+    <victoires>73</victoires>
+    <defaites>7</defaites>
+    <classement>3</classement>
+  </equipe>
+  <equipe nom="Miami Heat">
+    <victoires>66</victoires>
+    <defaites>14</defaites>
+    <classement>4</classement>
+  </equipe>
+  <equipe nom="Boston Celtics">
+    <victoires>64</victoires>
+    <defaites>16</defaites>
+    <classement>5</classement>
+  </equipe>
+  <equipe nom="San Antonio Spurs">
+    <victoires>62</victoires>
+    <defaites>18</defaites>
+    <classement>6</classement>
+  </equipe>
+  <equipe nom="Oklahoma City Thunder">
+    <victoires>59</victoires>
+    <defaites>21</defaites>
+    <classement>7</classement>
+  </equipe>
+  <equipe nom="Denver Nuggets">
+    <victoires>57</victoires>
+    <defaites>23</defaites>
+    <classement>8</classement>
+  </equipe>
+  <equipe nom="Phoenix Suns">
+    <victoires>56</victoires>
+    <defaites>24</defaites>
+    <classement>9</classement>
+  </equipe>
+  <equipe nom="Portland Trail Blazers">
+    <victoires>55</victoires>
+    <defaites>25</defaites>
+    <classement>10</classement>
+  </equipe>
+  <equipe nom="Memphis Grizzlies">
+    <victoires>51</victoires>
+    <defaites>29</defaites>
+    <classement>11</classement>
+  </equipe>
+  <equipe nom="New York Knicks">
+    <victoires>48</victoires>
+    <defaites>32</defaites>
+    <classement>12</classement>
+  </equipe>
+  <equipe nom="Washington Wizards">
+    <victoires>45</victoires>
+    <defaites>35</defaites>
+    <classement>13</classement>
+  </equipe>
+  <equipe nom="Detroit Pistons">
+    <victoires>42</victoires>
+    <defaites>38</defaites>
+    <classement>14</classement>
+  </equipe>
+  <equipe nom="Charlotte Hornets">
+    <victoires>39</victoires>
+    <defaites>41</defaites>
+    <classement>15</classement>
+  </equipe>
+</statistiques_equipe>

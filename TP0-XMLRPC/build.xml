@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TP0-XMLRPC-Chat" default="all" basedir=".">
+    
+    
+    <property name="src.interfaces" value="interfaces"/>
+    <property name="src.impl" value="impl"/>
+    <property name="src.server" value="server"/>
+    <property name="src.client" value="client"/>
+    <property name="bin.dir" value="bin"/>
+    <property name="doc.dir" value="doc"/>
+    <property name="archive.dir" value="archive"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="archive.server" value="ChatServer.jar"/>
+    <property name="archive.client" value="ChatClient.jar"/>
+    
+    
+    <path id="classpath">
+        <pathelement path="${bin.dir}"/>
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+   
+    <target name="init" description="Initialisation de l'environnement">
+        <echo message="Création des répertoires nécessaires..."/>
+        <mkdir dir="${bin.dir}"/>
+        <mkdir dir="${doc.dir}"/>
+        <mkdir dir="${archive.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+        <echo message="Environnement initialisé avec succès."/>
+    </target>
+    
+    
+    <target name="compile" depends="init" description="Compilation des sources Java">
+        <echo message="Compilation des fichiers Java..."/>
+        <javac destdir="${bin.dir}"
+               includeantruntime="false"
+               encoding="UTF-8">
+            <src path="${src.interfaces}"/>
+            <src path="${src.impl}"/>
+            <src path="${src.server}"/>
+            <src path="${src.client}"/>
+            <classpath refid="classpath"/>
+        </javac>
+        <echo message="Compilation terminée."/>
+    </target>
+    
+
+    <target name="doc" depends="init" description="Génération de la documentation Javadoc">
+        <echo message="Génération de la documentation API..."/>
+        <javadoc destdir="${doc.dir}"
+                 encoding="UTF-8"
+                 charset="UTF-8"
+                 docencoding="UTF-8"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="Documentation API ${ant.project.name}">
+            <fileset dir="${src.interfaces}">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${src.impl}">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${src.server}">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${src.client}">
+                <include name="**/*.java"/>
+            </fileset>
+            <classpath refid="classpath"/>
+            <doctitle><![CDATA[<h1>Documentation API ${ant.project.name}</h1>]]></doctitle>
+        </javadoc>
+        <echo message="Documentation générée dans ${doc.dir}"/>
+    </target>
+    
+    
+    <target name="arch" depends="compile,doc" description="Archivage du projet">
+        <echo message="Création des archives..."/>
+        
+     
+        <jar destfile="${archive.dir}/${archive.server}" basedir="${bin.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="server.ChatServer"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${bin.dir}">
+                <include name="server/**/*.class"/>
+            </fileset>
+        </jar>
+        
+       
+        <jar destfile="${archive.dir}/${archive.client}" basedir="${bin.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="client.ChatClient"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${bin.dir}">
+                <include name="client/**/*.class"/>
+            </fileset>
+        </jar>
+        
+        <echo message="Archives créées dans ${archive.dir}"/>
+    </target>
+    
+   
+    <target name="clean" description="Nettoyage des fichiers générés">
+        <echo message="Nettoyage du projet..."/>
+        <delete dir="${bin.dir}"/>
+        <delete>
+            <fileset dir="${src.interfaces}" includes="**/*.class"/>
+            <fileset dir="${src.impl}" includes="**/*.class"/>
+            <fileset dir="${src.server}" includes="**/*.class"/>
+            <fileset dir="${src.client}" includes="**/*.class"/>
+        </delete>
+        <echo message="Dossier ${bin.dir} et fichiers .class supprimés."/>
+    </target>
+    
+    
+    <target name="run-server" depends="compile" description="Démarrer le serveur de chat">
+        <echo message="Démarrage du serveur..."/>
+        <java classname="server.ChatServer" fork="true">
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+    
+    
+    <target name="run-client" depends="compile" description="Démarrer un client">
+        <echo message="Démarrage du client..."/>
+        <java classname="client.ChatClient" fork="true">
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+    
+ 
+    <target name="all" depends="clean,init,compile,doc,arch" description="Exécution complète du build">
+        <echo message="Build complet terminé avec succès !"/>
+    </target>
+    
+</project>
