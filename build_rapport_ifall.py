@@ -611,14 +611,15 @@ def build_figures():
     figures["3.1"] = save_fig("3.1", xmlrpc)
 
     def soap(draw):
-        draw_box(draw, (85, 175, 350, 345), "Client SOAP", "HTTP POST\nopération XML", fill=(248, 250, 252))
-        draw_box(draw, (455, 150, 790, 370), "Message SOAP", "Envelope\nHeader optionnel\nBody : opération", fill=(239, 246, 255), hatch=True)
-        draw_box(draw, (915, 175, 1190, 345), "Service /chat", "SoapUtil.parse()\nChatRoomImpl", fill=(236, 253, 245))
+        draw_box(draw, (85, 165, 350, 320), "Client SOAP", "HTTP POST\nopération XML", fill=(248, 250, 252))
+        draw_box(draw, (455, 140, 800, 335), "Message SOAP", "Envelope\nHeader optionnel\nBody : opération", fill=(239, 246, 255), hatch=True)
+        draw_box(draw, (925, 165, 1205, 320), "Service /chat", "SoapUtil.parse()\nChatRoomImpl", fill=(236, 253, 245))
         draw_box(draw, (520, 505, 990, 635), "Contrat WSDL", "GET /chat?wsdl\nopérations : subscribe, postMessage, getMessages", fill=(255, 247, 237))
-        arrow(draw, (350, 235), (455, 235), label="requête")
-        arrow(draw, (790, 235), (915, 235), label="parse")
-        arrow(draw, (915, 302), (790, 302), dashed=True, label="réponse")
-        arrow(draw, (1120, 345), (990, 505), dashed=True, label="décrit")
+        arrow(draw, (350, 225), (455, 225), label="requête")
+        arrow(draw, (800, 225), (925, 225), label="parse")
+        # La réponse passe sous les blocs pour éviter de masquer le contenu de l'enveloppe.
+        arrow(draw, (925, 385), (350, 385), dashed=True, label="réponse SOAP")
+        arrow(draw, (1120, 320), (990, 505), dashed=True, label="décrit")
         draw.text((95, 690), "SOAP sépare le contrat du service et le message échangé : le WSDL décrit, l’enveloppe transporte.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
     figures["4.1"] = save_fig("4.1", soap)
