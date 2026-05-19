@@ -23,7 +23,6 @@ Le dépôt présente une même application de discussion, **ChatUser**, impléme
 | `ProjetAnt/` | Exemple d’automatisation Java avec Apache Ant. |
 | `fop/` et `projet/` | Exemples XML, XSL-FO et génération PDF avec Apache FOP. |
 | `images/` | Captures d’exécution insérées dans le rapport Word. |
-| `rapport/` | Ancienne base de rapport utilisée comme source documentaire. |
 
 ## Technologies étudiées
 
