@@ -16,6 +16,7 @@
 
 # Rapports et rendus intermédiaires
 *.pdf
+!rapports/rapport-TP-0.pdf
 qa_*/
 qa_*.html
 qa_ifall_preview.html
