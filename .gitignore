@@ -17,6 +17,8 @@
 # Rapports et rendus intermédiaires
 *.pdf
 !rapports/rapport-TP-0.pdf
+rapports/guide-*.docx
+build_guide_*.py
 qa_*/
 qa_*.html
 qa_ifall_preview.html
