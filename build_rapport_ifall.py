@@ -15,7 +15,7 @@ from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.shared import Cm, Pt, RGBColor
 
 ROOT = Path(r"C:\Users\DELL\Downloads\i-fall")
-OUT = ROOT / "rapport-i-fall-complet.docx"
+OUT = ROOT / "rapports" / "rapport-TP-0.docx"
 FIG_DIR = ROOT / "figures_croquis_ifall"
 LOGO_UCAD = Path(r"C:\Users\DELL\Downloads\logo_ucad.png")
 REPO_URL = "https://github.com/salifbiaye/projet-tp-0"
@@ -52,13 +52,13 @@ ANCHORS = {
     "summary": "summary",
     "figures": "figures",
     "ch1": "ch1_intro",
-    "ch2": "ch2_rmi",
-    "ch3": "ch3_xmlrpc",
-    "ch4": "ch4_soap",
-    "ch5": "ch5_rest",
-    "ch6": "ch6_comparison",
-    "ch7": "ch7_validation",
-    "bonus_tcp": "bonus_tcp",
+    "ch2": "ch2_tcp",
+    "ch3": "ch3_rmi",
+    "ch4": "ch4_xmlrpc",
+    "ch5": "ch5_soap",
+    "ch6": "ch6_rest",
+    "ch7": "ch7_comparison",
+    "ch8": "ch8_validation",
     "annexes": "annexes",
 }
 
@@ -68,13 +68,13 @@ def fig_anchor(number):
 
 FIG_TITLES = {
     "1.1": "Architecture commune du projet ChatUser",
-    "2.1": "Architecture Java RMI avec registre et callbacks",
-    "3.1": "Communication XML-RPC avec appel HTTP et polling",
-    "4.1": "Traitement SOAP avec enveloppe XML et WSDL",
-    "5.1": "Architecture REST avec endpoints HTTP et JSON",
-    "6.1": "Comparaison des modèles de communication distribuée",
-    "7.1": "Chaîne de validation commune des applications ChatUser",
-    "B.1": "Bonus technique : variante TCP sockets",
+    "2.1": "Communication TCP Socket bas niveau",
+    "3.1": "Architecture Java RMI avec registre et callbacks",
+    "4.1": "Communication XML-RPC avec appel HTTP et polling",
+    "5.1": "Traitement SOAP avec enveloppe XML et WSDL",
+    "6.1": "Architecture REST avec endpoints HTTP et JSON",
+    "7.1": "Comparaison des modèles de communication distribuée",
+    "8.1": "Chaîne de validation commune des applications ChatUser",
     "A.1": "Pipeline Apache Ant du projet",
     "A.2": "Pipeline Apache FOP de génération PDF",
 }
@@ -610,7 +610,7 @@ def build_figures():
         draw_box(draw, (80, 170, 430, 300), "Clients Swing", "Alice, Bob, Charlie\nInterface utilisateur", fill=(248, 250, 252))
         draw_box(draw, (570, 160, 930, 315), "Serveur ChatRoom", "Inscription\nMessages\nDiffusion / consultation", fill=(236, 253, 245), hatch=True)
         draw_box(draw, (1080, 170, 1400, 300), "Etat partagé", "Utilisateurs\nHistorique\nPseudo unique", fill=(255, 247, 237))
-        draw_box(draw, (210, 455, 1290, 630), "Technologies étudiées", "RMI : objet distant et callback    |    XML-RPC : HTTP + XML\nSOAP : enveloppe XML + WSDL        |    REST : endpoints HTTP + JSON", fill=(255, 255, 255))
+        draw_box(draw, (210, 455, 1290, 630), "Technologies étudiées", "TCP : socket bas niveau       |    RMI : objet distant\nXML-RPC : HTTP + XML          |    SOAP : enveloppe XML + WSDL\nREST : endpoints HTTP + JSON", fill=(255, 255, 255))
         arrow(draw, (430, 235), (570, 235), label="requête")
         arrow(draw, (930, 235), (1080, 235), label="mise à jour")
         arrow(draw, (750, 315), (750, 455), dashed=True, label="même besoin")
@@ -629,20 +629,22 @@ def build_figures():
         arrow(draw, (360, 305), (1030, 305), dashed=True, label="postMessage")
         draw.text((100, 705), "RMI garde une logique objet : le client appelle une méthode distante et le serveur peut rappeler les clients inscrits.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
-    figures["2.1"] = save_fig("2.1", rmi)
+    figures["3.1"] = save_fig("3.1", rmi)
 
     def xmlrpc(draw):
-        draw_box(draw, (90, 175, 360, 345), "Client Swing", "XmlRpcClient\nsubscribe()\npostMessage()", fill=(248, 250, 252))
-        draw_box(draw, (470, 165, 760, 355), "Requête XML-RPC", "HTTP POST\n<methodCall>\nparamètres XML", fill=(239, 246, 255), hatch=True)
-        draw_box(draw, (880, 175, 1165, 345), "Serveur XML-RPC", "WebServer : 8080\nHandler : ChatRoom", fill=(236, 253, 245))
-        draw_box(draw, (520, 505, 1010, 635), "Historique des messages", "messages[]\nlastIndex -> nouveaux messages", fill=(255, 247, 237))
-        arrow(draw, (360, 235), (470, 235), label="appel")
-        arrow(draw, (760, 235), (880, 235), label="exécution")
-        arrow(draw, (1030, 345), (900, 505), dashed=True, label="écrit")
-        arrow(draw, (520, 560), (360, 325), dashed=True, label="getMessages")
-        draw.text((95, 690), "Réception par polling : le client revient demander les messages qui suivent son dernier index connu.", font=pil_font(20, hand=True), fill=(20, 20, 20))
+        draw_box(draw, (80, 165, 350, 330), "Client ChatUser", "Interface Swing\nXmlRpcClient\nappel de méthode", fill=(248, 250, 252))
+        draw_box(draw, (465, 145, 780, 355), "HTTP + XML", "POST /RPC2\n<methodCall>\nmethodName\nparams", fill=(239, 246, 255), hatch=True)
+        draw_box(draw, (920, 165, 1215, 330), "Serveur XML-RPC", "WebServer 8080\nHandler ChatRoom", fill=(236, 253, 245))
+        draw_box(draw, (1040, 500, 1370, 640), "ChatRoomImpl", "subscribe\npostMessage\ngetMessages", fill=(236, 253, 245))
+        draw_box(draw, (320, 500, 720, 640), "Historique messages", "messages[]\nlastIndex\nnouveaux messages", fill=(255, 247, 237))
+        arrow(draw, (350, 225), (465, 225), label="appel")
+        arrow(draw, (780, 225), (920, 225), label="exécute")
+        arrow(draw, (1120, 330), (1180, 500), dashed=True, label="métier")
+        arrow(draw, (1040, 570), (720, 570), dashed=True, label="stocke")
+        arrow(draw, (185, 330), (320, 570), dashed=True, label="polling getMessages(lastIndex)")
+        draw.text((90, 700), "XML-RPC garde l’idée d’appel de méthode distante, mais l’appel devient un message HTTP/XML ; la réception passe par polling.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
-    figures["3.1"] = save_fig("3.1", xmlrpc)
+    figures["4.1"] = save_fig("4.1", xmlrpc)
 
     def soap(draw):
         draw_box(draw, (85, 165, 350, 320), "Client SOAP", "HTTP POST\nopération XML", fill=(248, 250, 252))
@@ -656,7 +658,7 @@ def build_figures():
         arrow(draw, (1120, 320), (990, 505), dashed=True, label="décrit")
         draw.text((95, 690), "SOAP sépare le contrat du service et le message échangé : le WSDL décrit, l’enveloppe transporte.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
-    figures["4.1"] = save_fig("4.1", soap)
+    figures["5.1"] = save_fig("5.1", soap)
 
     def rest(draw):
         draw_box(draw, (80, 165, 390, 340), "Client", "Swing, navigateur\nou curl", fill=(248, 250, 252))
@@ -669,20 +671,19 @@ def build_figures():
         arrow(draw, (580, 590), (390, 315), dashed=True, label="réponse")
         draw.text((90, 705), "REST expose des ressources par URL et s’appuie sur des méthodes HTTP lisibles pour piloter le chat.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
-    figures["5.1"] = save_fig("5.1", rest)
+    figures["6.1"] = save_fig("6.1", rest)
 
     def comparison(draw):
-        draw_box(draw, (80, 165, 390, 340), "RMI", "Objet distant\nCallback\nJava uniquement", fill=(236, 253, 245))
-        draw_box(draw, (435, 165, 735, 340), "XML-RPC", "RPC simple\nXML sur HTTP\nPolling", fill=(239, 246, 255))
-        draw_box(draw, (780, 165, 1075, 340), "SOAP", "Contrat WSDL\nEnvelope XML\nService formel", fill=(255, 247, 237))
-        draw_box(draw, (1120, 165, 1410, 340), "REST", "Endpoints\nJSON\nInteropérable", fill=(248, 250, 252))
-        draw_box(draw, (190, 500, 1320, 650), "Lecture comparative", "Plus on va vers REST, plus l’échange devient web et interopérable.\nPlus on va vers RMI, plus l’échange ressemble à une application Java objet.", fill=(255, 255, 255), hatch=True)
-        arrow(draw, (230, 340), (330, 500), dashed=True)
-        arrow(draw, (585, 340), (645, 500), dashed=True)
-        arrow(draw, (930, 340), (930, 500), dashed=True)
-        arrow(draw, (1265, 340), (1190, 500), dashed=True)
+        draw_box(draw, (55, 155, 310, 330), "TCP", "Bytes\nIP + port\nProtocole maison", fill=(248, 250, 252))
+        draw_box(draw, (345, 155, 600, 330), "RMI", "Objet distant\nCallback\nJava", fill=(236, 253, 245))
+        draw_box(draw, (635, 155, 890, 330), "XML-RPC", "Méthode distante\nHTTP + XML\nPolling", fill=(239, 246, 255))
+        draw_box(draw, (925, 155, 1180, 330), "SOAP", "Envelope XML\nWSDL\nContrat", fill=(255, 247, 237))
+        draw_box(draw, (1215, 155, 1470, 330), "REST", "Ressources\nHTTP + JSON\nWeb moderne", fill=(248, 250, 252))
+        draw_box(draw, (150, 505, 1360, 660), "Lecture comparative", "L’évolution va du contrôle réseau total vers des API plus lisibles et interopérables.\nChaque étape ajoute de l’abstraction, mais impose aussi ses choix de format et de contrat.", fill=(255, 255, 255), hatch=True)
+        for x in (180, 470, 760, 1050, 1340):
+            arrow(draw, (x, 330), (x, 505), dashed=True)
 
-    figures["6.1"] = save_fig("6.1", comparison)
+    figures["7.1"] = save_fig("7.1", comparison)
 
     def validation(draw):
         steps = [
@@ -699,7 +700,7 @@ def build_figures():
         draw_box(draw, (270, 510, 1240, 660), "Résultat attendu", "Deux clients connectés voient les notifications d’entrée, les messages envoyés et les notifications de sortie.", fill=(236, 253, 245), hatch=True)
         arrow(draw, (750, 330), (750, 510), dashed=True)
 
-    figures["7.1"] = save_fig("7.1", validation)
+    figures["8.1"] = save_fig("8.1", validation)
 
     def tcp(draw):
         draw_box(draw, (80, 180, 390, 340), "Clients", "Socket\npseudo puis lignes", fill=(248, 250, 252))
@@ -710,9 +711,9 @@ def build_figures():
         arrow(draw, (920, 250), (1080, 250), label="création")
         arrow(draw, (1240, 340), (980, 520), dashed=True, label="diffusion")
         arrow(draw, (590, 590), (390, 310), dashed=True, label="retour")
-        draw.text((95, 705), "Variante utile pour comprendre le réseau bas niveau, mais placée en bonus car elle n’était pas le cœur demandé.", font=pil_font(20, hand=True), fill=(20, 20, 20))
+        draw.text((95, 705), "TCP montre la base réseau brute : connexion IP/port, messages ligne par ligne et diffusion manuelle.", font=pil_font(20, hand=True), fill=(20, 20, 20))
 
-    figures["B.1"] = save_fig("B.1", tcp)
+    figures["2.1"] = save_fig("2.1", tcp)
 
     def ant(draw):
         steps = [
@@ -799,7 +800,7 @@ def add_cover(doc):
     add_callout(
         doc,
         "Objet du document",
-        "Présenter de manière claire, structurée et détaillée les réalisations autour de l’application ChatUser : RMI, XML-RPC, SOAP, REST, comparaison des architectures, guide d’exécution, puis annexes Ant et FOP.",
+        "Présenter de manière claire, structurée et détaillée les réalisations autour de l’application ChatUser : TCP sockets, RMI, XML-RPC, SOAP, REST, comparaison des architectures, guide d’exécution, puis annexes Ant et FOP.",
         kind="method",
     )
 
@@ -809,7 +810,7 @@ def add_cover(doc):
         ("Étudiants", "Salif Biaye\nNdeye Astou Diagouraga\nMouhamadou Tidiane Seck\nSountou Sakho"),
         ("Enseignant", "Pr. Ibrahima Fall"),
         ("Nature du livrable", "Rapport Word complet, sans LaTeX"),
-        ("Technologies étudiées", "Java RMI, XML-RPC, SOAP, REST, Ant, Apache FOP"),
+        ("Technologies étudiées", "TCP sockets, Java RMI, XML-RPC, SOAP, REST, Ant, Apache FOP"),
         ("Code source", REPO_URL),
         ("Date", "Mai 2026"),
     ]
@@ -850,13 +851,13 @@ def add_front_matter(doc):
     chapter(doc, "Sommaire", "Plan manuel cliquable du document", anchor=ANCHORS["summary"])
     rows = [
         (("Introduction générale aux systèmes distribués", ANCHORS["ch1"]), "Lien"),
-        (("Application ChatUser avec Java RMI", ANCHORS["ch2"]), "Lien"),
-        (("Application ChatUser avec XML-RPC", ANCHORS["ch3"]), "Lien"),
-        (("Application ChatUser avec SOAP", ANCHORS["ch4"]), "Lien"),
-        (("Application ChatUser avec REST", ANCHORS["ch5"]), "Lien"),
-        (("Comparaison générale des architectures", ANCHORS["ch6"]), "Lien"),
-        (("Guide d’exécution, validation et captures", ANCHORS["ch7"]), "Lien"),
-        (("Bonus technique : variante TCP sockets", ANCHORS["bonus_tcp"]), "Lien"),
+        (("Application ChatUser avec sockets TCP", ANCHORS["ch2"]), "Lien"),
+        (("Application ChatUser avec Java RMI", ANCHORS["ch3"]), "Lien"),
+        (("Application ChatUser avec XML-RPC", ANCHORS["ch4"]), "Lien"),
+        (("Application ChatUser avec SOAP", ANCHORS["ch5"]), "Lien"),
+        (("Application ChatUser avec REST", ANCHORS["ch6"]), "Lien"),
+        (("Comparaison générale des architectures", ANCHORS["ch7"]), "Lien"),
+        (("Guide d’exécution, validation et captures", ANCHORS["ch8"]), "Lien"),
         (("Annexes : Projet Ant, Apache FOP et références", ANCHORS["annexes"]), "Lien"),
     ]
     add_table(doc, ["Partie", "Accès"], rows, weights=[5, 1], header_fill=LIGHT_BLUE)
@@ -876,7 +877,7 @@ def chapter_intro(doc, figures):
     )
     add_paragraph(
         doc,
-        "Dans un système distribué, les composants ne s’exécutent pas forcément dans la même machine virtuelle, ni même sur la même machine physique. Il faut donc définir un moyen de communication entre client et serveur : appel d’objet distant, appel de procédure distante, échange HTTP, message XML, message JSON ou socket réseau. Le projet illustre ces approches à travers des versions Java différentes.",
+        "Dans un système distribué, les composants ne s’exécutent pas forcément dans la même machine virtuelle, ni même sur la même machine physique. Il faut donc définir un moyen de communication entre client et serveur : socket réseau, appel d’objet distant, appel de procédure distante, échange HTTP, message XML ou message JSON. Le projet illustre ces approches à travers des versions Java différentes.",
     )
     add_callout(
         doc,
@@ -903,17 +904,17 @@ def chapter_intro(doc, figures):
     section_heading(doc, "1.3 Périmètre retenu")
     add_paragraph(
         doc,
-        "Le cœur du rapport traite les versions RMI, XML-RPC, SOAP et REST. La variante TCP sockets est conservée en section bonus, car elle aide à comprendre les mécanismes bas niveau mais ne constitue pas le cœur demandé. Les dossiers Ant et FOP sont placés en annexes techniques : ils complètent le livrable sans alourdir les chapitres principaux.",
+        "Le rapport commence volontairement par TCP sockets, car c’est l’approche la plus basse : elle montre la connexion IP/port et l’échange de données brutes avant les abstractions. Les chapitres suivants montent progressivement en niveau : RMI masque le réseau derrière l’objet Java, XML-RPC et SOAP passent par HTTP/XML, puis REST exploite directement les ressources HTTP et JSON. Les dossiers Ant et FOP sont placés en annexes techniques : ils complètent le livrable sans alourdir les chapitres principaux.",
     )
     add_table(
         doc,
         ["Partie", "Dossier source", "Rôle dans le rapport"],
         [
+            ("TCP sockets", "TP0-TCP", "Chapitre principal : communication IP/port et protocole ligne par ligne."),
             ("Java RMI", "TP0", "Chapitre principal : objets distants et callbacks."),
             ("XML-RPC", "TP0-XMLRPC", "Chapitre principal : RPC simple sur HTTP/XML."),
             ("SOAP", "TP0-SOAP", "Chapitre principal : enveloppe XML et contrat WSDL."),
             ("REST", "TP0-REST", "Chapitre principal : endpoints HTTP et JSON."),
-            ("TCP sockets", "dossier bonus TCP", "Bonus technique : compréhension réseau bas niveau."),
             ("Apache Ant", "ProjetAnt et build.xml", "Annexe : automatisation compilation, documentation et archive."),
             ("Apache FOP", "fop et projet", "Annexe : transformation XML/XSL-FO vers PDF."),
         ],
@@ -923,13 +924,13 @@ def chapter_intro(doc, figures):
 
 
 def chapter_rmi(doc, figures):
-    chapter(doc, "Chapitre 2 : Application ChatUser avec Java RMI", "Objet distant, registre RMI et callbacks", anchor=ANCHORS["ch2"])
-    section_heading(doc, "2.1 Contexte du travail pratique")
+    chapter(doc, "Chapitre 3 : Application ChatUser avec Java RMI", "Objet distant, registre RMI et callbacks", anchor=ANCHORS["ch3"])
+    section_heading(doc, "3.1 Contexte du travail pratique")
     add_paragraph(
         doc,
         "La version RMI du projet montre comment une application Java peut appeler les méthodes d’un objet situé dans une autre JVM. Le serveur publie un objet distant représentant la salle de discussion, tandis que chaque client expose aussi un objet distant permettant de recevoir les messages par callback.",
     )
-    section_heading(doc, "2.2 Objectif du travail pratique")
+    section_heading(doc, "3.2 Objectif du travail pratique")
     add_paragraph(
         doc,
         "L’objectif est de réaliser une salle de discussion distribuée en conservant une programmation orientée objet. Le travail attendu consiste à définir les interfaces distantes, implémenter la salle commune, publier l’objet serveur dans le registre RMI et vérifier que plusieurs clients reçoivent bien les messages diffusés.",
@@ -938,7 +939,7 @@ def chapter_rmi(doc, figures):
         doc,
         "La réponse proposée repose donc sur deux contrats : `ChatRoom` pour les opérations de la salle et `ChatUser` pour le retour vers les clients. Cette double interface permet d’obtenir une communication bidirectionnelle : le client appelle le serveur et le serveur rappelle le client.",
     )
-    section_heading(doc, "2.3 Notions utilisées")
+    section_heading(doc, "3.3 Notions utilisées")
     add_paragraph(
         doc,
         "Java RMI repose sur trois idées : une interface distante, une implémentation exportée et un registre qui permet au client de retrouver l’objet distant par son nom. Dans ce projet, `ChatRoom` est l’interface distante côté serveur, tandis que `ChatUser` permet au serveur de rappeler les clients connectés.",
@@ -949,8 +950,8 @@ def chapter_rmi(doc, figures):
         "RMI garde une écriture très proche de l’objet local : le client appelle `postMessage`, mais l’exécution réelle se produit côté serveur. Le réseau est masqué par l’infrastructure RMI.",
         "info",
     )
-    add_figure(doc, figures, "2.1")
-    section_heading(doc, "2.4 Analyse du code")
+    add_figure(doc, figures, "3.1")
+    section_heading(doc, "3.4 Analyse du code")
     add_paragraph(
         doc,
         "L’interface `ChatRoom` définit les opérations accessibles à distance. Elle hérite de `Remote`, et chaque méthode déclare `RemoteException`, ce qui rappelle qu’un appel distant peut échouer pour une raison réseau, une indisponibilité du serveur ou une déconnexion du client.",
@@ -983,7 +984,7 @@ public interface ChatRoom extends Remote {
         weights=[1.4, 2.0, 3.0],
         header_fill=LIGHT_TEAL,
     )
-    section_heading(doc, "2.5 Commandes d’exécution")
+    section_heading(doc, "3.5 Commandes d’exécution")
     add_paragraph(doc, "Le projet possède un fichier `build.xml`. Les commandes Ant évitent de compiler manuellement chaque paquet Java.")
     add_code_block(
         doc,
@@ -997,7 +998,7 @@ ant run-client -Dpseudo=Alice
 """,
         "Commandes de compilation et lancement de la version RMI.",
     )
-    section_heading(doc, "2.6 Résultat attendu et synthèse")
+    section_heading(doc, "3.6 Résultat attendu et synthèse")
     add_paragraph(
         doc,
         "Le serveur doit afficher les arrivées, les départs et les messages. Deux clients lancés en parallèle doivent voir les mêmes événements de conversation. La version RMI est très adaptée à un environnement Java homogène, mais elle est moins naturelle si des clients non Java doivent communiquer avec le service.",
@@ -1009,13 +1010,13 @@ ant run-client -Dpseudo=Alice
 
 
 def chapter_xmlrpc(doc, figures):
-    chapter(doc, "Chapitre 3 : Application ChatUser avec XML-RPC", "Appels de procédures distantes sur HTTP et XML", anchor=ANCHORS["ch3"])
-    section_heading(doc, "3.1 Contexte du travail pratique")
+    chapter(doc, "Chapitre 4 : Application ChatUser avec XML-RPC", "Appels de procédures distantes sur HTTP et XML", anchor=ANCHORS["ch4"])
+    section_heading(doc, "4.1 Contexte du travail pratique")
     add_paragraph(
         doc,
         "XML-RPC propose une approche différente de RMI. Le client n’obtient pas une référence vers un objet Java distant ; il envoie une requête HTTP contenant le nom d’une méthode et ses paramètres encodés en XML. Le serveur reçoit la requête, identifie la méthode appelée et renvoie une réponse XML.",
     )
-    section_heading(doc, "3.2 Objectif du travail pratique")
+    section_heading(doc, "4.2 Objectif du travail pratique")
     add_paragraph(
         doc,
         "L’objectif est de réimplémenter le même besoin ChatUser en remplaçant l’appel objet distant par un appel de procédure distante. Le serveur doit publier des méthodes accessibles par nom, tandis que le client doit construire des appels XML-RPC et interpréter les réponses.",
@@ -1024,19 +1025,19 @@ def chapter_xmlrpc(doc, figures):
         doc,
         "La réponse proposée choisit une liste centralisée de messages et un index de lecture. Cette solution évite d’avoir un objet client distant et s’adapte mieux à un protocole requête/réponse : le client revient périodiquement chercher ce qu’il n’a pas encore lu.",
     )
-    section_heading(doc, "3.3 Fonctionnement retenu dans ChatUser")
+    section_heading(doc, "4.3 Fonctionnement retenu dans ChatUser")
     add_paragraph(
         doc,
         "Dans cette version, le serveur expose un gestionnaire nommé `ChatRoom`. Les opérations principales sont `subscribe`, `unsubscribe`, `postMessage` et `getMessages`. Comme le serveur XML-RPC ne rappelle pas directement les clients, la réception repose sur le polling : le client demande périodiquement les nouveaux messages depuis un index connu.",
     )
-    add_figure(doc, figures, "3.1")
+    add_figure(doc, figures, "4.1")
     add_callout(
         doc,
         "Différence avec RMI",
         "RMI autorise un callback direct vers l’objet client. XML-RPC reste sur un échange requête/réponse : pour recevoir les messages, le client doit revenir demander ce qui a changé.",
         "warn",
     )
-    section_heading(doc, "3.4 Analyse du code")
+    section_heading(doc, "4.4 Analyse du code")
     add_paragraph(
         doc,
         "Le serveur s’appuie sur `WebServer` de la bibliothèque Apache XML-RPC. Le mapping associe le nom logique `ChatRoom` à la classe `ChatRoomImpl`. Côté métier, la classe conserve une liste de messages et retourne uniquement les messages ajoutés depuis `lastIndex`.",
@@ -1071,7 +1072,7 @@ webServer.start();
         weights=[1.3, 1.7, 1.6, 2.4],
         header_fill=LIGHT_TEAL,
     )
-    section_heading(doc, "3.5 Commandes et résultat attendu")
+    section_heading(doc, "4.5 Commandes et résultat attendu")
     add_code_block(
         doc,
         """
@@ -1095,13 +1096,13 @@ ant run-client
 
 
 def chapter_soap(doc, figures):
-    chapter(doc, "Chapitre 4 : Application ChatUser avec SOAP", "Enveloppe XML, service HTTP et contrat WSDL", anchor=ANCHORS["ch4"])
-    section_heading(doc, "4.1 Contexte du travail pratique")
+    chapter(doc, "Chapitre 5 : Application ChatUser avec SOAP", "Enveloppe XML, service HTTP et contrat WSDL", anchor=ANCHORS["ch5"])
+    section_heading(doc, "5.1 Contexte du travail pratique")
     add_paragraph(
         doc,
         "SOAP est un protocole de services web basé sur XML. Il impose une structure de message plus formelle que XML-RPC : une enveloppe, un corps et éventuellement un en-tête. Dans le projet, le service est publié sur `/chat` et expose aussi un WSDL simplifié via `/chat?wsdl`.",
     )
-    section_heading(doc, "4.2 Objectif du travail pratique")
+    section_heading(doc, "5.2 Objectif du travail pratique")
     add_paragraph(
         doc,
         "L’objectif est de comprendre comment un service web contractuel traite des opérations distantes. Par rapport à XML-RPC, SOAP rend l’échange plus formel : les opérations sont placées dans une enveloppe XML et le service peut fournir une description WSDL.",
@@ -1110,13 +1111,13 @@ def chapter_soap(doc, figures):
         doc,
         "La réponse proposée consiste à garder la logique métier `ChatRoomImpl`, mais à l’envelopper dans une couche SOAP. Ainsi, le cœur de l’application reste comparable aux autres versions, tandis que la couche réseau illustre le traitement XML propre à SOAP.",
     )
-    section_heading(doc, "4.3 Architecture du service")
+    section_heading(doc, "5.3 Architecture du service")
     add_paragraph(
         doc,
         "La version SOAP utilise `HttpServer` pour recevoir des requêtes HTTP. Une requête `GET` avec la query `wsdl` retourne le contrat du service. Une requête `POST` contient une enveloppe SOAP ; le serveur parse le XML avec `SoapUtil`, identifie l’opération demandée, puis appelle la méthode correspondante dans `ChatRoomImpl`.",
     )
-    add_figure(doc, figures, "4.1")
-    section_heading(doc, "4.4 Analyse du traitement")
+    add_figure(doc, figures, "5.1")
+    section_heading(doc, "5.4 Analyse du traitement")
     add_paragraph(
         doc,
         "Le code montre bien la séparation entre transport, parsing et logique métier. `ChatServer` reçoit la requête, `SoapUtil` extrait l’opération, puis `ChatRoomImpl` applique la règle fonctionnelle : inscription, désinscription, ajout d’un message ou récupération des messages.",
@@ -1151,7 +1152,7 @@ Element operation = SoapUtil.getSoapOperation(document);
         weights=[1.4, 2.4, 2.5],
         header_fill=LIGHT_ORANGE,
     )
-    section_heading(doc, "4.5 Commandes et résultat attendu")
+    section_heading(doc, "5.5 Commandes et résultat attendu")
     add_code_block(
         doc,
         """
@@ -1175,13 +1176,13 @@ http://localhost:8081/chat?wsdl
 
 
 def chapter_rest(doc, figures):
-    chapter(doc, "Chapitre 5 : Application ChatUser avec REST", "Endpoints HTTP, JSON et ressources applicatives", anchor=ANCHORS["ch5"])
-    section_heading(doc, "5.1 Contexte du travail pratique")
+    chapter(doc, "Chapitre 6 : Application ChatUser avec REST", "Endpoints HTTP, JSON et ressources applicatives", anchor=ANCHORS["ch6"])
+    section_heading(doc, "6.1 Contexte du travail pratique")
     add_paragraph(
         doc,
         "La version REST traduit le fonctionnement de ChatUser en endpoints HTTP. Les opérations ne sont plus exposées comme des objets distants ou comme des procédures XML, mais comme des points d’accès web : inscription, envoi de message, consultation des nouveaux messages et désinscription.",
     )
-    section_heading(doc, "5.2 Objectif du travail pratique")
+    section_heading(doc, "6.2 Objectif du travail pratique")
     add_paragraph(
         doc,
         "L’objectif est d’exprimer l’application sous forme d’API web simple. Le client n’a plus besoin d’une bibliothèque RPC particulière : il envoie des requêtes HTTP et reçoit du JSON. Ce modèle facilite les tests avec des outils standards et prépare à la conception d’API modernes.",
@@ -1190,12 +1191,12 @@ def chapter_rest(doc, figures):
         doc,
         "La réponse proposée définit quatre endpoints, chacun associé à une responsabilité précise. Le serveur vérifie la méthode HTTP, lit les données envoyées et répond avec un statut JSON. Le comportement métier reste celui du chat, mais l’interface devient web.",
     )
-    section_heading(doc, "5.3 Endpoints disponibles")
+    section_heading(doc, "6.3 Endpoints disponibles")
     add_paragraph(
         doc,
         "Le serveur REST écoute sur le port 8082. Les échanges sont en JSON, ce qui rend les requêtes plus légères et lisibles que les enveloppes SOAP. Le client Swing peut utiliser ces endpoints, mais ils peuvent aussi être testés avec un navigateur, curl ou Postman.",
     )
-    add_figure(doc, figures, "5.1")
+    add_figure(doc, figures, "6.1")
     add_table(
         doc,
         ["Endpoint", "Méthode", "Corps / paramètres", "Rôle"],
@@ -1208,7 +1209,7 @@ def chapter_rest(doc, figures):
         weights=[1.8, 0.9, 2.5, 2.2],
         header_fill=LIGHT_TEAL,
     )
-    section_heading(doc, "5.4 Analyse du code")
+    section_heading(doc, "6.4 Analyse du code")
     add_paragraph(
         doc,
         "La classe `ChatServer` crée un contexte HTTP pour chaque endpoint. Les méthodes `handleSubscribe`, `handleMessage` ou `handleMessages` vérifient la méthode HTTP, lisent le JSON, appellent la logique métier puis renvoient une réponse JSON avec un statut explicite.",
@@ -1231,7 +1232,7 @@ exchange.getResponseHeaders()
         "Le projet utilise un `JsonUtil` simple au lieu d’une grosse bibliothèque externe. Cela rend le mécanisme visible : lecture du corps, extraction des champs et construction manuelle de la réponse.",
         "info",
     )
-    section_heading(doc, "5.5 Commandes et résultat attendu")
+    section_heading(doc, "6.5 Commandes et résultat attendu")
     add_code_block(
         doc,
         """
@@ -1256,50 +1257,50 @@ POST http://localhost:8082/chat/subscribe
 
 
 def chapter_comparison(doc, figures):
-    chapter(doc, "Chapitre 6 : Comparaison générale des architectures", "Lire les différences techniques et pédagogiques", anchor=ANCHORS["ch6"])
-    section_heading(doc, "6.1 Vue comparative")
+    chapter(doc, "Chapitre 7 : Comparaison générale des architectures", "Lire les différences techniques et pédagogiques", anchor=ANCHORS["ch7"])
+    section_heading(doc, "7.1 Vue comparative")
     add_paragraph(
         doc,
-        "Les quatre versions principales résolvent le même problème, mais elles ne le modélisent pas de la même manière. RMI privilégie l’objet distant, XML-RPC privilégie l’appel de procédure simple, SOAP formalise les échanges XML avec un contrat, et REST transforme les actions en ressources HTTP manipulées avec JSON.",
+        "Les cinq versions résolvent le même problème, mais elles ne le modélisent pas de la même manière. TCP expose l’échange brut, RMI privilégie l’objet distant, XML-RPC privilégie l’appel de procédure simple, SOAP formalise les échanges XML avec un contrat, et REST transforme les actions en ressources HTTP manipulées avec JSON.",
     )
-    add_figure(doc, figures, "6.1")
-    section_heading(doc, "6.2 Tableau de synthèse")
+    add_figure(doc, figures, "7.1")
+    section_heading(doc, "7.2 Tableau de synthèse")
     add_table(
         doc,
-        ["Critère", "RMI", "XML-RPC", "SOAP", "REST"],
+        ["Critère", "TCP", "RMI", "XML-RPC", "SOAP", "REST"],
         [
-            ("Modèle", "Objet distant", "Procédure distante", "Service contractuel", "Ressource HTTP"),
-            ("Format", "Sérialisation Java", "XML", "XML SOAP", "JSON"),
-            ("Transport", "RMI/JRMP", "HTTP", "HTTP", "HTTP"),
-            ("Réception messages", "Callback serveur", "Polling", "Polling", "Polling"),
-            ("Interopérabilité", "Faible hors Java", "Bonne", "Bonne mais verbeuse", "Très bonne"),
-            ("Lisibilité réseau", "Peu lisible", "Lisible mais XML", "Très verbeux", "Lisible et compact"),
-            ("Usage typique", "Système Java homogène", "RPC léger", "SI formel/contrat", "API web moderne"),
+            ("Modèle", "Flux brut", "Objet distant", "Procédure distante", "Service contractuel", "Ressource HTTP"),
+            ("Format", "Texte/bytes", "Sérialisation Java", "XML", "XML SOAP", "JSON"),
+            ("Transport", "TCP direct", "RMI/JRMP", "HTTP", "HTTP", "HTTP"),
+            ("Réception messages", "Connexion persistante", "Callback serveur", "Polling", "Polling", "Polling"),
+            ("Interopérabilité", "Possible mais manuelle", "Faible hors Java", "Bonne", "Bonne mais verbeuse", "Très bonne"),
+            ("Lisibilité réseau", "Très visible", "Peu lisible", "Lisible mais XML", "Très verbeux", "Lisible et compact"),
+            ("Usage typique", "Chat/jeu bas niveau", "Système Java homogène", "RPC léger", "SI formel/contrat", "API web moderne"),
         ],
-        weights=[1.4, 1.4, 1.5, 1.5, 1.6],
+        weights=[1.15, 1.05, 1.15, 1.2, 1.2, 1.25],
         header_fill=LIGHT_BLUE,
-        font_size=8.2,
+        font_size=7.4,
     )
-    section_heading(doc, "6.3 Analyse")
+    section_heading(doc, "7.3 Analyse")
     add_paragraph(
         doc,
         "La différence la plus structurante concerne le sens de communication. RMI permet au serveur d’appeler directement les clients grâce à `ChatUser`. Les autres versions principales ne disposent pas de ce callback ; le client doit donc interroger le serveur pour récupérer les nouveaux messages. Cette distinction explique une grande partie des différences de code.",
     )
     add_paragraph(
         doc,
-        "Le deuxième axe concerne le format. SOAP et XML-RPC utilisent XML, ce qui facilite la représentation structurée mais augmente la verbosité. REST utilise JSON, plus compact et plus habituel dans les API modernes. RMI, lui, masque le format réseau au développeur Java.",
+        "Le deuxième axe concerne le format. TCP rend le protocole applicatif entièrement manuel. SOAP et XML-RPC utilisent XML, ce qui facilite la représentation structurée mais augmente la verbosité. REST utilise JSON, plus compact et plus habituel dans les API modernes. RMI, lui, masque le format réseau au développeur Java.",
     )
     add_callout(
         doc,
         "Synthèse pédagogique",
-        "RMI montre l’appel objet distant, XML-RPC montre le RPC simple, SOAP montre le service web contractuel, REST montre l’API web moderne. Le projet donne donc une comparaison complète des styles de communication distribuée.",
+        "TCP montre la base réseau brute, RMI montre l’appel objet distant, XML-RPC montre le RPC simple, SOAP montre le service web contractuel, REST montre l’API web moderne. Le projet donne donc une comparaison complète, du plus bas niveau vers le modèle web actuel.",
         "ok",
     )
 
 
 def chapter_validation(doc, figures):
-    chapter(doc, "Chapitre 7 : Guide d’exécution et de validation", "Compiler, lancer, capturer et contrôler les résultats", anchor=ANCHORS["ch7"])
-    section_heading(doc, "7.1 Préparation de l’environnement")
+    chapter(doc, "Chapitre 8 : Guide d’exécution et de validation", "Compiler, lancer, capturer et contrôler les résultats", anchor=ANCHORS["ch8"])
+    section_heading(doc, "8.1 Préparation de l’environnement")
     add_paragraph(
         doc,
         "Les projets sont des applications Java organisées avec Apache Ant. Avant de tester, il faut vérifier que Java et Ant sont disponibles dans le terminal. Ensuite, chaque version se lance selon le même principe : compilation, démarrage du serveur, lancement d’un ou plusieurs clients.",
@@ -1312,8 +1313,8 @@ ant -version
 """,
         "Contrôle minimal de l’environnement Java et Ant.",
     )
-    add_figure(doc, figures, "7.1")
-    section_heading(doc, "7.2 Scénario de test commun")
+    add_figure(doc, figures, "8.1")
+    section_heading(doc, "8.2 Scénario de test commun")
     add_paragraph(
         doc,
         "Le scénario de validation doit rester identique pour toutes les versions principales. On lance un serveur, puis deux clients. Le premier client utilise le pseudo Alice, le second utilise Bob. Alice envoie un message, Bob doit le recevoir ; Bob répond, Alice doit le recevoir à son tour.",
@@ -1330,11 +1331,12 @@ ant -version
             "La sortie d’un client ne bloque pas le serveur.",
         ],
     )
-    section_heading(doc, "7.3 Commandes par version")
+    section_heading(doc, "8.3 Commandes par version")
     add_table(
         doc,
         ["Version", "Dossier", "Port", "Commandes principales"],
         [
+            ("TCP", "TP0-TCP", "8083", "ant compile ; ant run-server ; ant run-client"),
             ("RMI", "TP0", "1099", "ant compile ; ant run-server ; ant run-client -Dpseudo=Alice"),
             ("XML-RPC", "TP0-XMLRPC", "8080", "ant compile ; ant run-server ; ant run-client"),
             ("SOAP", "TP0-SOAP", "8081", "ant compile ; ant run-server ; ant run-client"),
@@ -1343,36 +1345,36 @@ ant -version
         weights=[1.0, 1.4, 0.8, 4.0],
         header_fill=LIGHT_TEAL,
     )
-    section_heading(doc, "7.4 Captures d’exécution à insérer")
+    section_heading(doc, "8.4 Captures d’exécution à insérer")
     add_paragraph(
         doc,
         "Les captures ci-dessous documentent une exécution réelle de la version REST de ChatUser. Elles complètent les schémas en montrant le serveur, les clients, l’échange de messages et la sortie d’un utilisateur.",
     )
     add_capture_image(
         doc,
-        "Capture 7.1 : serveur REST démarré",
+        "Capture 8.1 : serveur REST démarré",
         "server-start.png",
         "Cette capture montre le lancement du serveur avec `ant run-server`. Le terminal affiche le port `8082`, les endpoints REST disponibles et les premières notifications d’arrivée dans la salle.",
     )
     add_capture_image(
         doc,
-        "Capture 7.2 : deux clients connectés",
+        "Capture 8.2 : deux clients connectés",
         "two-client-connected.png",
         "Cette capture confirme que deux utilisateurs distincts rejoignent la salle de discussion. Le serveur reçoit les événements et les affiche dans le terminal.",
     )
     add_capture_image(
         doc,
-        "Capture 7.3 : message envoyé et reçu",
+        "Capture 8.3 : message envoyé et reçu",
         "send-message.png",
         "Cette capture montre deux fenêtres clientes. Un message envoyé par un utilisateur apparaît dans l’autre fenêtre, ce qui valide la circulation des messages entre clients via le serveur REST.",
     )
     add_capture_image(
         doc,
-        "Capture 7.4 : sortie de l’utilisateur Babacar",
-        "sortie-babacar.png",
+        "Capture 8.4 : sortie de l’utilisateur Babacar",
+        "babacar-out.png",
         "Cette capture illustre la notification de sortie d’un utilisateur. Elle permet de vérifier que la désinscription est prise en compte sans bloquer l’application.",
     )
-    section_heading(doc, "7.5 Points de contrôle")
+    section_heading(doc, "8.5 Points de contrôle")
     add_paragraph(
         doc,
         "La validation ne doit pas seulement consister à voir que le programme se lance. Il faut vérifier le comportement attendu : unicité des pseudos, réception des messages, absence de blocage serveur, gestion correcte des clients déconnectés et cohérence entre les messages affichés par les différents clients.",
@@ -1385,15 +1387,19 @@ ant -version
     )
 
 
-def bonus_tcp(doc, figures):
-    chapter(doc, "Bonus technique : variante ChatUser avec sockets TCP", "Compréhension réseau bas niveau", anchor=ANCHORS["bonus_tcp"])
-    section_heading(doc, "B.1 Pourquoi cette partie est en bonus")
+def chapter_tcp(doc, figures):
+    chapter(doc, "Chapitre 2 : Application ChatUser avec sockets TCP", "Communication IP, port et protocole ligne par ligne", anchor=ANCHORS["ch2"])
+    section_heading(doc, "2.1 Contexte du travail pratique")
     add_paragraph(
         doc,
-        "La version TCP n’est pas intégrée aux chapitres principaux parce qu’elle ne faisait pas partie du périmètre demandé. Elle reste cependant intéressante : elle expose directement le mécanisme réseau utilisé à bas niveau par beaucoup de technologies plus abstraites.",
+        "La version TCP est placée en premier parce qu’elle représente le niveau le plus bas étudié dans le projet. Avant de parler d’objet distant, de XML, de SOAP ou de REST, il faut comprendre qu’au fond une application distribuée doit faire communiquer deux machines à travers une adresse, un port et un flux de données.",
     )
-    add_figure(doc, figures, "B.1")
-    section_heading(doc, "B.2 Fonctionnement")
+    add_paragraph(
+        doc,
+        "Dans cette variante, le serveur ChatUser ne publie pas encore de service web ni d’objet distant. Il écoute simplement sur un port avec `ServerSocket`, accepte les connexions entrantes et échange des lignes de texte avec les clients connectés.",
+    )
+    add_figure(doc, figures, "2.1")
+    section_heading(doc, "2.2 Fonctionnement")
     add_paragraph(
         doc,
         "Le serveur ouvre un `ServerSocket` sur le port 8083. À chaque connexion entrante, il crée un `ClientHandler` exécuté dans un thread séparé. Le client envoie d’abord son pseudo, puis chaque ligne suivante est interprétée comme un message de chat.",
@@ -1428,14 +1434,20 @@ try (ServerSocket serverSocket = new ServerSocket(8083)) {
         doc,
         "Cette approche est plus manuelle : il faut gérer le protocole ligne par ligne, les connexions, les déconnexions et la diffusion. Elle est utile pour apprendre, mais elle demande plus de discipline qu’un service HTTP ou qu’un appel distant déjà structuré.",
     )
-    section_heading(doc, "B.3 Analyse et limites")
+    section_heading(doc, "2.3 Analyse et limites")
     add_paragraph(
         doc,
         "La variante TCP rend visibles les détails que les autres technologies cachent : ouverture de socket, flux d’entrée/sortie, boucle d’acceptation et concurrence. Cette transparence est intéressante pour apprendre le réseau, mais elle impose de définir soi-même un protocole applicatif. Ici, le protocole est volontairement simple : une ligne pour le pseudo, puis une ligne par message.",
     )
     add_paragraph(
         doc,
-        "Les limites apparaissent vite dans une application réelle : pas de format structuré comme JSON ou XML, pas de contrat de service, pas de gestion avancée des erreurs et un risque de complexité dès qu’il faut ajouter des commandes plus riches. Pour cette raison, TCP est conservé comme bonus pédagogique plutôt que comme solution principale du rapport.",
+        "Les limites apparaissent vite dans une application réelle : pas de format structuré comme JSON ou XML, pas de contrat de service, pas de gestion avancée des erreurs et un risque de complexité dès qu’il faut ajouter des commandes plus riches. Cette observation justifie le passage aux technologies suivantes : RMI, XML-RPC, SOAP et REST ajoutent chacune une abstraction au-dessus de cette base réseau.",
+    )
+    add_callout(
+        doc,
+        "Transition vers RMI",
+        "TCP donne le contrôle total, mais oblige le développeur à tout gérer. RMI arrive ensuite pour masquer une partie de cette complexité dans le monde Java : le client ne manipule plus seulement des lignes de texte, il appelle une méthode distante.",
+        "warning",
     )
 
 
@@ -1538,7 +1550,7 @@ driver.run();
     section_heading(doc, "Conclusion générale")
     add_paragraph(
         doc,
-        "Le projet i-fall permet de comprendre que la communication distribuée ne dépend pas seulement du code métier, mais aussi du modèle d’échange choisi. RMI donne une vision objet, XML-RPC simplifie l’appel distant, SOAP formalise les contrats XML et REST propose une approche web lisible et interopérable. Les annexes Ant et FOP complètent le travail en montrant l’automatisation de build et la transformation documentaire.",
+        "Le projet i-fall permet de comprendre que la communication distribuée ne dépend pas seulement du code métier, mais aussi du modèle d’échange choisi. TCP montre la base réseau brute, RMI donne une vision objet, XML-RPC simplifie l’appel distant, SOAP formalise les contrats XML et REST propose une approche web lisible et interopérable. Les annexes Ant et FOP complètent le travail en montrant l’automatisation de build et la transformation documentaire.",
     )
     add_callout(
         doc,
@@ -1561,13 +1573,13 @@ def build_doc():
     add_cover(doc)
     add_front_matter(doc)
     chapter_intro(doc, figures)
+    chapter_tcp(doc, figures)
     chapter_rmi(doc, figures)
     chapter_xmlrpc(doc, figures)
     chapter_soap(doc, figures)
     chapter_rest(doc, figures)
     chapter_comparison(doc, figures)
     chapter_validation(doc, figures)
-    bonus_tcp(doc, figures)
     annexes(doc, figures)
     doc.save(OUT)
     return OUT
